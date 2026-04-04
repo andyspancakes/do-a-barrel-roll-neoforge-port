@@ -3,11 +3,10 @@ package nl.enjarai.doabarrelroll.mixin.client.roll;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
-import net.minecraft.client.render.Camera;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.client.Camera;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import nl.enjarai.doabarrelroll.api.RollCamera;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.math.MagicNumbers;
@@ -21,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Camera.class)
 public abstract class CameraMixin implements RollCamera {
-    @Shadow private Entity focusedEntity;
+    @Shadow private Entity entity;
 
     @Unique
     private boolean isRolling;
@@ -40,34 +39,34 @@ public abstract class CameraMixin implements RollCamera {
     *///?}
 
     @Inject(
-            method = "updateEyeHeight",
+            method = "tick",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/client/render/Camera;cameraY:F",
+                    target = "Lnet/minecraft/client/Camera;eyeHeight:F",
                     ordinal = 0
             )
     )
     private void doABarrelRoll$interpolateRollnt(CallbackInfo ci) {
-        if (!((RollEntity) focusedEntity).doABarrelRoll$isRolling()) {
+        if (!((RollEntity) entity).doABarrelRoll$isRolling()) {
             lastRollBack = rollBack;
             rollBack -= rollBack * 0.5f;
         }
     }
 
     @Inject(
-            method = "update",
+            method = "setup",
             at = @At("HEAD")
     )
-    private void doABarrelRoll$captureTickDeltaAndUpdate(World area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
+    private void doABarrelRoll$captureTickDeltaAndUpdate(Level area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
         tickDeltaRef.set(tickDelta);
         isRolling = ((RollEntity) focusedEntity).doABarrelRoll$isRolling();
     }
 
     @Inject(
-            method = "update",
+            method = "setup",
             at = @At("TAIL")
     )
-    private void doABarrelRoll$updateRollBack(World area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+    private void doABarrelRoll$updateRollBack(Level area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
         if (isRolling) {
             rollBack = roll;
             lastRollBack = roll;
@@ -76,27 +75,27 @@ public abstract class CameraMixin implements RollCamera {
 
     //? if fabric {
     @WrapWithCondition(
-            method = "update",
+            method = "setup",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V",
+                    target = "Lnet/minecraft/client/Camera;setRotation(FF)V",
                     ordinal = 1
             )
     )
     private boolean doABarrelRoll$addRoll1(Camera thiz, float yaw, float pitch, @Share("tickDelta") LocalFloatRef tickDelta) {
         if (isRolling) {
-            tempRoll.set(-((RollEntity) focusedEntity).doABarrelRoll$getRoll(tickDelta.get()));
+            tempRoll.set(-((RollEntity) entity).doABarrelRoll$getRoll(tickDelta.get()));
         } else {
-            tempRoll.set(-MathHelper.lerp(tickDelta.get(), lastRollBack, rollBack));
+            tempRoll.set(-Mth.lerp(tickDelta.get(), lastRollBack, rollBack));
         }
         return true;
     }
 
     @WrapWithCondition(
-            method = "update",
+            method = "setup",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V",
+                    target = "Lnet/minecraft/client/Camera;setRotation(FF)V",
                     ordinal = 2
             )
     )
@@ -106,10 +105,10 @@ public abstract class CameraMixin implements RollCamera {
     }
 
     @WrapWithCondition(
-            method = "update",
+            method = "setup",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V",
+                    target = "Lnet/minecraft/client/Camera;setRotation(FF)V",
                     ordinal = 3
             )
     )

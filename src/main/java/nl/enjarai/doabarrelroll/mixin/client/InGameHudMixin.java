@@ -2,9 +2,9 @@ package nl.enjarai.doabarrelroll.mixin.client;
 
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import nl.enjarai.doabarrelroll.EventCallbacksClient;
 import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 import org.joml.Vector2i;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Mixin(InGameHud.class)
+@Mixin(Gui.class)
 public abstract class InGameHudMixin {
     @Inject(
             method = "renderCrosshair",
@@ -23,8 +23,8 @@ public abstract class InGameHudMixin {
                     value = "HEAD"
             )
     )
-    private void doABarrelRoll$renderAdditionalCrosshairComponents(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci, @Share("crosshair_offset") LocalRef<Vector2i> crosshairOffset) {
-        crosshairOffset.set(EventCallbacksClient.onRenderCrosshair(context, tickCounter, context.getScaledWindowWidth(), context.getScaledWindowHeight()));
+    private void doABarrelRoll$renderAdditionalCrosshairComponents(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci, @Share("crosshair_offset") LocalRef<Vector2i> crosshairOffset) {
+        crosshairOffset.set(EventCallbacksClient.onRenderCrosshair(context, tickCounter, context.guiWidth(), context.guiHeight()));
     }
 
     @ModifyArgs(
@@ -62,12 +62,10 @@ public abstract class InGameHudMixin {
             at = @At(
                     value = "INVOKE",
                     //? if fabric {
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderBossBarHud(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"
-                     //?} else
-                    /*target = "Lnet/neoforged/neoforge/client/gui/GuiLayerManager;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"*/
+                    target = "Lnet/minecraft/client/gui/Gui;renderBossOverlay(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"
             )
     )
-    private void doABarrelRoll$renderPeppy(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        StarFoxUtil.renderPeppy(context, tickCounter.getFixedDeltaTicks(), context.getScaledWindowWidth(), context.getScaledWindowHeight());
+    private void doABarrelRoll$renderPeppy(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+        StarFoxUtil.renderPeppy(context, tickCounter.getRealtimeDeltaTicks(), context.guiWidth(), context.guiHeight());
     }
 }

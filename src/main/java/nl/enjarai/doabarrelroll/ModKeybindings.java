@@ -1,91 +1,90 @@
 package nl.enjarai.doabarrelroll;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.api.key.InputContext;
 import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.ModConfigScreen;
 import nl.enjarai.doabarrelroll.net.ClientNetworking;
 import org.lwjgl.glfw.GLFW;
-
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.List;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 public class ModKeybindings {
-    public static final KeyBinding.Category CATEGORY =
-            KeyBinding.Category.create(DoABarrelRoll.id("do_a_barrel_roll"));
+    public static final KeyMapping.Category CATEGORY =
+            KeyMapping.Category.register(DoABarrelRoll.id("do_a_barrel_roll"));
 
-    public static final KeyBinding TOGGLE_ENABLED = new KeyBinding(
+    public static final KeyMapping TOGGLE_ENABLED = new KeyMapping(
             "key.do_a_barrel_roll.toggle_enabled",
-            InputUtil.Type.KEYSYM,
+            InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_I,
             CATEGORY
     );
-    public static final KeyBinding TOGGLE_THRUST = new KeyBinding(
+    public static final KeyMapping TOGGLE_THRUST = new KeyMapping(
             "key.do_a_barrel_roll.toggle_thrust",
-            InputUtil.Type.KEYSYM,
-            InputUtil.UNKNOWN_KEY.getCode(),
+            InputConstants.Type.KEYSYM,
+            InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
-    public static final KeyBinding OPEN_CONFIG = new KeyBinding(
+    public static final KeyMapping OPEN_CONFIG = new KeyMapping(
             "key.do_a_barrel_roll.open_config",
-            InputUtil.Type.KEYSYM,
-            InputUtil.UNKNOWN_KEY.getCode(),
+            InputConstants.Type.KEYSYM,
+            InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
 
-    public static final KeyBinding PITCH_UP = new KeyBinding(
+    public static final KeyMapping PITCH_UP = new KeyMapping(
             "key.do_a_barrel_roll.pitch_up",
-            InputUtil.Type.KEYSYM,
-            InputUtil.UNKNOWN_KEY.getCode(),
+            InputConstants.Type.KEYSYM,
+            InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
-    public static final KeyBinding PITCH_DOWN = new KeyBinding(
+    public static final KeyMapping PITCH_DOWN = new KeyMapping(
             "key.do_a_barrel_roll.pitch_down",
-            InputUtil.Type.KEYSYM,
-            InputUtil.UNKNOWN_KEY.getCode(),
+            InputConstants.Type.KEYSYM,
+            InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
-    public static final KeyBinding YAW_LEFT = new KeyBinding(
+    public static final KeyMapping YAW_LEFT = new KeyMapping(
             "key.do_a_barrel_roll.yaw_left",
-            InputUtil.Type.KEYSYM,
+            InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_A,
             CATEGORY
     );
-    public static final KeyBinding YAW_RIGHT = new KeyBinding(
+    public static final KeyMapping YAW_RIGHT = new KeyMapping(
             "key.do_a_barrel_roll.yaw_right",
-            InputUtil.Type.KEYSYM,
+            InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_D,
             CATEGORY
     );
-    public static final KeyBinding ROLL_LEFT = new KeyBinding(
+    public static final KeyMapping ROLL_LEFT = new KeyMapping(
             "key.do_a_barrel_roll.roll_left",
-            InputUtil.Type.KEYSYM,
-            InputUtil.UNKNOWN_KEY.getCode(),
+            InputConstants.Type.KEYSYM,
+            InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
-    public static final KeyBinding ROLL_RIGHT = new KeyBinding(
+    public static final KeyMapping ROLL_RIGHT = new KeyMapping(
             "key.do_a_barrel_roll.roll_right",
-            InputUtil.Type.KEYSYM,
-            InputUtil.UNKNOWN_KEY.getCode(),
+            InputConstants.Type.KEYSYM,
+            InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
-    public static final KeyBinding THRUST_FORWARD = new KeyBinding(
+    public static final KeyMapping THRUST_FORWARD = new KeyMapping(
             "key.do_a_barrel_roll.thrust_forward",
-            InputUtil.Type.KEYSYM,
+            InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_W,
             CATEGORY
     );
-    public static final KeyBinding THRUST_BACKWARD = new KeyBinding(
+    public static final KeyMapping THRUST_BACKWARD = new KeyMapping(
             "key.do_a_barrel_roll.thrust_backward",
-            InputUtil.Type.KEYSYM,
-            InputUtil.UNKNOWN_KEY.getCode(),
+            InputConstants.Type.KEYSYM,
+            InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
 
-    public static final List<KeyBinding> ALL = List.of(
+    public static final List<KeyMapping> ALL = List.of(
             TOGGLE_ENABLED,
             TOGGLE_THRUST,
             OPEN_CONFIG,
@@ -99,15 +98,15 @@ public class ModKeybindings {
             THRUST_BACKWARD
     );
 
-    public static void clientTick(MinecraftClient client) {
-        while (TOGGLE_ENABLED.wasPressed()) {
+    public static void clientTick(Minecraft client) {
+        while (TOGGLE_ENABLED.consumeClick()) {
             if (!ClientNetworking.HANDSHAKE_CLIENT.getConfig().map(LimitedModConfigServer::forceEnabled).orElse(false)) {
                 ModConfig.INSTANCE.setModEnabled(!ModConfig.INSTANCE.getModEnabled());
                 ModConfig.INSTANCE.save();
 
                 if (client.player != null) {
-                    client.player.sendMessage(
-                            Text.translatable(
+                    client.player.displayClientMessage(
+                            Component.translatable(
                                     "key.do_a_barrel_roll." +
                                             (ModConfig.INSTANCE.getModEnabled() ? "toggle_enabled.enable" : "toggle_enabled.disable")
                             ),
@@ -116,21 +115,21 @@ public class ModKeybindings {
                 }
             } else {
                 if (client.player != null) {
-                    client.player.sendMessage(
-                            Text.translatable("key.do_a_barrel_roll.toggle_enabled.disallowed"),
+                    client.player.displayClientMessage(
+                            Component.translatable("key.do_a_barrel_roll.toggle_enabled.disallowed"),
                             true
                     );
                 }
             }
         }
-        while (TOGGLE_THRUST.wasPressed()) {
+        while (TOGGLE_THRUST.consumeClick()) {
             if (ClientNetworking.HANDSHAKE_CLIENT.getConfig().map(LimitedModConfigServer::allowThrusting).orElse(false)) {
                 ModConfig.INSTANCE.setEnableThrust(!ModConfig.INSTANCE.getEnableThrust());
                 ModConfig.INSTANCE.save();
 
                 if (client.player != null) {
-                    client.player.sendMessage(
-                            Text.translatable(
+                    client.player.displayClientMessage(
+                            Component.translatable(
                                     "key.do_a_barrel_roll." +
                                             (ModConfig.INSTANCE.getEnableThrust() ? "toggle_thrust.enable" : "toggle_thrust.disable")
                             ),
@@ -139,15 +138,15 @@ public class ModKeybindings {
                 }
             } else {
                 if (client.player != null) {
-                    client.player.sendMessage(
-                            Text.translatable("key.do_a_barrel_roll.toggle_thrust.disallowed"),
+                    client.player.displayClientMessage(
+                            Component.translatable("key.do_a_barrel_roll.toggle_thrust.disallowed"),
                             true
                     );
                 }
             }
         }
-        while (OPEN_CONFIG.wasPressed()) {
-            client.setScreen(ModConfigScreen.create(client.currentScreen));
+        while (OPEN_CONFIG.consumeClick()) {
+            client.setScreen(ModConfigScreen.create(client.screen));
         }
     }
 }

@@ -3,10 +3,10 @@ plugins {
     kotlin("jvm") version "2.0.0" apply false
     kotlin("plugin.serialization") version "2.0.0" apply false
     id("co.uzzu.dotenv.gradle") version "4.0.0"
-    id("dev.architectury.loom") version "1.13-SNAPSHOT" apply false
+    id("net.fabricmc.fabric-loom") version "1.15-SNAPSHOT" apply false
     id("me.modmuss50.mod-publish-plugin") version "0.5.+" apply false
 }
-stonecutter active "1.21.11-fabric" /* [SC] DO NOT EDIT */
+stonecutter active "26.1-fabric" /* [SC] DO NOT EDIT */
 
 stonecutter registerChiseled tasks.register("chiseledBuildAndCollect", stonecutter.chiseled) {
     group = "project"

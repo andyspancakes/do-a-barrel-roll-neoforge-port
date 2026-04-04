@@ -1,32 +1,32 @@
 package nl.enjarai.doabarrelroll.mixin.client.roll;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.util.math.RotationAxis;
+import com.mojang.math.Axis;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import nl.enjarai.doabarrelroll.api.RollRenderState;
 import org.joml.Quaternionfc;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-@Mixin(PlayerEntityRenderer.class)
+@Mixin(AvatarRenderer.class)
 public abstract class PlayerEntityRendererMixin {
     @ModifyArg(
-            method = "setupTransforms(Lnet/minecraft/client/render/entity/state/PlayerEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;FF)V",
+            method = "setupRotations(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;FF)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/util/math/MatrixStack;multiply(Lorg/joml/Quaternionfc;)V",
+                    target = "Lcom/mojang/blaze3d/vertex/PoseStack;mulPose(Lorg/joml/Quaternionfc;)V",
                     ordinal = 1
             ),
             index = 0
     )
-    private Quaternionfc doABarrelRoll$modifyRoll(Quaternionfc original, @Local(argsOnly = true) PlayerEntityRenderState state) {
+    private Quaternionfc doABarrelRoll$modifyRoll(Quaternionfc original, @Local(argsOnly = true) AvatarRenderState state) {
         var rollState = (RollRenderState) state;
 
         if (rollState.doABarrelRoll$isRolling()) {
             var roll = rollState.doABarrelRoll$getRoll();
-            return RotationAxis.POSITIVE_Y.rotationDegrees(roll);
+            return Axis.YP.rotationDegrees(roll);
         }
 
         return original;

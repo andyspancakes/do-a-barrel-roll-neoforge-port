@@ -1,12 +1,12 @@
 package nl.enjarai.doabarrelroll.render;
 
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphics;
 import nl.enjarai.doabarrelroll.ModMath;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
 
 public class MomentumCrosshairWidget extends RenderHelper {
-    public static Vector2i render(DrawContext context, int scaledWidth, int scaledHeight, Vector2d mouseTurnVec) {
+    public static Vector2i render(GuiGraphics context, int scaledWidth, int scaledHeight, Vector2d mouseTurnVec) {
         int centerX = scaledWidth / 2;
         int centerY = scaledHeight / 2 - 1;
         mouseTurnVec.mul(50);

@@ -1,6 +1,6 @@
 plugins {
     `maven-publish`
-    id("dev.architectury.loom")
+    id("net.fabricmc.fabric-loom")
     id("me.modmuss50.mod-publish-plugin")
     id("me.fallenbreath.yamlang") version "1.5.0"
 }
@@ -15,7 +15,7 @@ class ModData {
 
 val mod = ModData()
 
-val loader = loom.platform.get().name.lowercase()
+val loader = "fabric" //loom.platform.get().name.lowercase()
 val isFabric = loader == "fabric"
 val mcVersion = property("mod.mc_version").toString() // stonecutter.current.project.substringBeforeLast('-')
 val mcDep = property("mod.mc_dep").toString()
@@ -34,48 +34,52 @@ repositories {
     strictMaven("https://api.modrinth.com/maven", "maven.modrinth")
     maven("https://maven.enjarai.dev/releases")
     maven("https://maven.enjarai.dev/mirrors")
-//    maven("https://jitpack.io")
+    maven("https://jitpack.io")
     maven("https://maven.neoforged.net/releases/")
     maven("https://maven.terraformersmc.com/releases/")
     maven("https://maven.bawnorton.com/releases/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://maven.su5ed.dev/releases")
+
 }
 
 dependencies {
     fun modrinth(name: String, dep: Any?) = "maven.modrinth:$name:$dep"
 
-    fun ifStable(str: String, action: (String) -> Unit = { modImplementation(it) }) {
-        if (isSnapshot) modCompileOnly(str) else action(str)
+    fun ifStable(str: String, action: (String) -> Unit = { implementation(it) }) {
+        if (isSnapshot) compileOnly(str) else action(str)
     }
 
     minecraft("com.mojang:minecraft:${mcVersion}")
     @Suppress("UnstableApiUsage")
-    mappings(loom.layered {
-        mappings("net.fabricmc:yarn:${mcVersion}+build.${property("deps.yarn_build")}:v2")
-        if (stonecutter.eval(mcVersion, "1.20.6"))
-            mappings("dev.architectury:yarn-mappings-patch-neoforge:1.20.5+build.3")
-        else if (stonecutter.eval(mcVersion, "1.21"))
-            mappings("dev.architectury:yarn-mappings-patch-neoforge:1.21+build.4")
-    })
+//    mappings(loom.layered {
+//        mappings("net.fabricmc:yarn:${mcVersion}+build.${property("deps.yarn_build")}:v2")
+//        if (stonecutter.eval(mcVersion, "1.20.6"))
+//            mappings("dev.architectury:yarn-mappings-patch-neoforge:1.20.5+build.3")
+//        else if (stonecutter.eval(mcVersion, "1.21"))
+//            mappings("dev.architectury:yarn-mappings-patch-neoforge:1.21+build.4")
+//    })
     val mixinExtras = "io.github.llamalad7:mixinextras-%s:${property("deps.mixin_extras")}"
     val mixinSquared = "com.github.bawnorton.mixinsquared:mixinsquared-%s:${property("deps.mixin_squared")}"
     implementation(annotationProcessor(mixinSquared.format("common"))!!)
 
-    modCompileOnly("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-$loader")
+//    compileOnly("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-$loader")
+    compileOnly(modrinth("yacl", "D39gcNZP"))
 
     if (isFabric) {
-        modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")}")
-        modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
+        implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")}")
+        implementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
         include(implementation(mixinSquared.format("fabric"))!!)
-        ifStable("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+//        ifStable("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+        ifStable(modrinth("modmenu", "jvjwXH6l"))
 
-        modApi("nl.enjarai:cicada-lib:${property("deps.cicada")}") {
+        api("nl.enjarai:cicada-lib:${property("deps.cicada")}") {
             exclude(group = "net.fabricmc.fabric-api")
         }
-        include(modImplementation("me.lucko:fabric-permissions-api:${property("deps.perm_api")}")!!)
+        include(implementation("me.lucko:fabric-permissions-api:${property("deps.perm_api")}")!!)
 
-        modRuntimeOnly("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-$loader")
+        //runtimeOnly("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-$loader")
+        runtimeOnly(modrinth("yacl", "D39gcNZP"))
     } else {
         if (loader == "forge") {
             "forge"("net.minecraftforge:forge:${mcVersion}-${property("deps.fml")}")
@@ -84,7 +88,7 @@ dependencies {
         } else
             "neoForge"("net.neoforged:neoforge:${property("deps.fml")}")
         include(implementation(mixinSquared.format(loader))!!)
-        modImplementation("org.sinytra.forgified-fabric-api:forgified-fabric-api:${property("deps.fapi")}")
+        implementation("org.sinytra.forgified-fabric-api:forgified-fabric-api:${property("deps.fapi")}")
     }
     // Config
 
@@ -93,13 +97,13 @@ dependencies {
         @Suppress("UselessCallOnNotNull")
         if (it.isNullOrBlank()) continue
         val (modid, version) = it.split('=')
-        modCompileOnly(modrinth(modid, version))
+        compileOnly(modrinth(modid, version))
     }
     for (it in property("deps.compat_runtime").toString().split(',')) {
         @Suppress("UselessCallOnNotNull")
         if (it.isNullOrBlank()) continue
         val (modid, version) = it.split('=')
-        modLocalRuntime(modCompileOnly(modrinth(modid, version))!!)
+        localRuntime(compileOnly(modrinth(modid, version))!!)
     }
 }
 
@@ -107,14 +111,14 @@ dependencies {
 loom {
     accessWidenerPath.set(rootProject.file("src/main/resources/do_a_barrel_roll.accesswidener"))
 
-    if (loader == "forge") forge {
-        convertAccessWideners.set(true)
-        mixinConfigs(
-            "${mod.id}.mixins.json"
-        )
-    } else if (loader == "neoforge") neoForge {
-
-    }
+//    if (loader == "forge") forge {
+//        convertAccessWideners.set(true)
+//        mixinConfigs(
+//            "${mod.id}.mixins.json"
+//        )
+//    } else if (loader == "neoforge") neoForge {
+//
+//    }
 
     runConfigs.all {
         ideConfigGenerated(true)
@@ -139,7 +143,7 @@ loom {
 // Tasks
 val buildAndCollect = tasks.register<Copy>("buildAndCollect") {
     group = "build"
-    from(tasks.remapJar.get().archiveFile)
+    from(tasks.jar.get().archiveFile)
     into(rootProject.layout.buildDirectory.file("libs/${mod.version}"))
     dependsOn("build")
 }
@@ -200,8 +204,8 @@ publishMods {
     val githubToken = findProperty("enjaraiGithubToken")
     dryRun = modrinthToken == null || curseforgeToken == null || githubToken == null
 
-    file = tasks.remapJar.get().archiveFile
-    additionalFiles.from(tasks.remapSourcesJar.get().archiveFile)
+    file = tasks.jar.get().archiveFile
+//    additionalFiles.from(tasks.sourcesJar.get().archiveFile)
     displayName =
         "${mod.version} for ${loader.replaceFirstChar { it.uppercase() }} ${property("mod.mc_title")}"
     version = "${project.version}-$loader"

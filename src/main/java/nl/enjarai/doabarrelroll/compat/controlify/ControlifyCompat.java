@@ -7,7 +7,7 @@ import dev.isxander.controlify.api.bind.InputBindingSupplier;
 import dev.isxander.controlify.api.entrypoint.ControlifyEntrypoint;
 import dev.isxander.controlify.api.event.ControlifyEvents;
 import dev.isxander.controlify.bindings.BindContext;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ModKeybindings;
@@ -74,57 +74,57 @@ public class ControlifyCompat implements ControlifyEntrypoint {
 
         PITCH_UP = bindings.registerBinding(builder -> builder
                 .id(DoABarrelRoll.id("pitch_up"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.pitch_up"))
+                .category(Component.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
+                .name(Component.translatable("controlify.bind.do_a_barrel_roll.pitch_up"))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.PITCH_UP)
         );
         PITCH_DOWN = bindings.registerBinding(builder -> builder
                 .id(DoABarrelRoll.id("pitch_down"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.pitch_down"))
+                .category(Component.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
+                .name(Component.translatable("controlify.bind.do_a_barrel_roll.pitch_down"))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.PITCH_DOWN)
         );
         ROLL_LEFT = bindings.registerBinding(builder -> builder
                 .id(DoABarrelRoll.id("roll_left"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.roll_left"))
+                .category(Component.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
+                .name(Component.translatable("controlify.bind.do_a_barrel_roll.roll_left"))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.ROLL_LEFT)
         );
         ROLL_RIGHT = bindings.registerBinding(builder -> builder
                 .id(DoABarrelRoll.id("roll_right"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.roll_right"))
+                .category(Component.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
+                .name(Component.translatable("controlify.bind.do_a_barrel_roll.roll_right"))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.ROLL_RIGHT)
         );
         YAW_LEFT = bindings.registerBinding(builder -> builder
                 .id(DoABarrelRoll.id("yaw_left"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.yaw_left"))
+                .category(Component.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
+                .name(Component.translatable("controlify.bind.do_a_barrel_roll.yaw_left"))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.YAW_LEFT)
         );
         YAW_RIGHT = bindings.registerBinding(builder -> builder
                 .id(DoABarrelRoll.id("yaw_right"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.yaw_right"))
+                .category(Component.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
+                .name(Component.translatable("controlify.bind.do_a_barrel_roll.yaw_right"))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.YAW_RIGHT)
         );
         THRUST_FORWARD = bindings.registerBinding(builder -> builder
                 .id(DoABarrelRoll.id("thrust_forward"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.thrust_forward"))
+                .category(Component.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
+                .name(Component.translatable("controlify.bind.do_a_barrel_roll.thrust_forward"))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.THRUST_FORWARD)
         );
         THRUST_BACKWARD = bindings.registerBinding(builder -> builder
                 .id(DoABarrelRoll.id("thrust_backward"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.thrust_backward"))
+                .category(Component.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
+                .name(Component.translatable("controlify.bind.do_a_barrel_roll.thrust_backward"))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.THRUST_BACKWARD)
         );

@@ -2,27 +2,27 @@ package nl.enjarai.doabarrelroll.mixin.client.key;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.gui.screen.option.ControlsListWidget;
-import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import nl.enjarai.doabarrelroll.util.key.ContextualKeyBinding;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(ControlsListWidget.KeyBindingEntry.class)
+@Mixin(KeyBindsList.KeyEntry.class)
 public abstract class KeyBindingEntryMixin {
-    @Shadow @Final private KeyBinding binding;
+    @Shadow @Final private KeyMapping key;
 
     @ModifyExpressionValue(
-            method = "update",
+            method = "refreshEntry",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/option/KeyBinding;equals(Lnet/minecraft/client/option/KeyBinding;)Z"
+                    target = "Lnet/minecraft/client/KeyMapping;same(Lnet/minecraft/client/KeyMapping;)Z"
             )
     )
-    private boolean doABarrelRoll$ignoreCertainKeyBindingConflicts(boolean original, @Local KeyBinding otherBinding) {
-        var firstContexts = ((ContextualKeyBinding) binding).doABarrelRoll$getContexts();
+    private boolean doABarrelRoll$ignoreCertainKeyBindingConflicts(boolean original, @Local KeyMapping otherBinding) {
+        var firstContexts = ((ContextualKeyBinding) key).doABarrelRoll$getContexts();
         var secondContexts = ((ContextualKeyBinding) otherBinding).doABarrelRoll$getContexts();
 
         // none + none -> original

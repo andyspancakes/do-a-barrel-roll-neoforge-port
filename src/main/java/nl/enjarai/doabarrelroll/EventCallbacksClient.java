@@ -1,8 +1,8 @@
 package nl.enjarai.doabarrelroll;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.api.RollMouse;
 import nl.enjarai.doabarrelroll.config.ModConfig;
@@ -14,7 +14,7 @@ import org.joml.Vector2d;
 import org.joml.Vector2i;
 
 public class EventCallbacksClient {
-    public static void clientTick(MinecraftClient client) {
+    public static void clientTick(Minecraft client) {
         InputContextImpl.getContexts().forEach(InputContextImpl::tick);
 
         if (!DoABarrelRollClient.isFallFlying()) {
@@ -26,20 +26,20 @@ public class EventCallbacksClient {
         StarFoxUtil.clientTick(client);
     }
 
-    public static Vector2i onRenderCrosshair(DrawContext context, RenderTickCounter tickCounter, int scaledWidth, int scaledHeight) {
+    public static Vector2i onRenderCrosshair(GuiGraphics context, DeltaTracker tickCounter, int scaledWidth, int scaledHeight) {
         if (!DoABarrelRollClient.isFallFlying()) return new Vector2i(0, 0);
-        var tickDelta = tickCounter.getFixedDeltaTicks();
+        var tickDelta = tickCounter.getRealtimeDeltaTicks();
 
-        var entity = MinecraftClient.getInstance().getCameraEntity();
+        var entity = Minecraft.getInstance().getCameraEntity();
         var rollEntity = ((RollEntity) entity);
         if (entity != null) {
             if (ModConfig.INSTANCE.getShowHorizon()) {
                 HorizonLineWidget.render(context, scaledWidth, scaledHeight,
-                        rollEntity.doABarrelRoll$getRoll(tickDelta), entity.getPitch(tickDelta));
+                        rollEntity.doABarrelRoll$getRoll(tickDelta), entity.getViewXRot(tickDelta));
             }
 
             if (ModConfig.INSTANCE.getMomentumBasedMouse() && ModConfig.INSTANCE.getShowMomentumWidget()) {
-                var rollMouse = (RollMouse) MinecraftClient.getInstance().mouse;
+                var rollMouse = (RollMouse) Minecraft.getInstance().mouseHandler;
 
                 return MomentumCrosshairWidget.render(context, scaledWidth, scaledHeight, new Vector2d(rollMouse.doABarrelRoll$getMouseTurnVec()));
             }

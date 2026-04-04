@@ -6,15 +6,15 @@ import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.command.DefaultPermissions;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.util.Util;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
@@ -35,10 +35,10 @@ import java.util.function.Consumer;
 
 public class YACLImplementation {
     public static Screen generateConfigScreen(Screen parent) {
-        var inWorld = MinecraftClient.getInstance().world != null;
-        ClientPlayerEntity player;
+        var inWorld = Minecraft.getInstance().level != null;
+        LocalPlayer player;
         var onRealms = DoABarrelRollClient.isConnectedToRealms() &&
-                (player = MinecraftClient.getInstance().player) != null && player.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS);
+                (player = Minecraft.getInstance().player) != null && player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
         var serverConfig = ClientNetworking.HANDSHAKE_CLIENT.getConfig();
 
         var thrustingAllowed = new Dependable(serverConfig.map(LimitedModConfigServer::allowThrusting).orElse(!inWorld || onRealms));
@@ -50,8 +50,8 @@ public class YACLImplementation {
                         .name(getText("general"))
                         .option(allowDisabled.add(getBooleanOption("general", "mod_enabled", false, false)
                                 .description(OptionDescription.createBuilder()
-                                        .text(Text.translatable("config.do_a_barrel_roll.general.mod_enabled.description",
-                                                ModKeybindings.TOGGLE_ENABLED.getBoundKeyLocalizedText()))
+                                        .text(Component.translatable("config.do_a_barrel_roll.general.mod_enabled.description",
+                                                ModKeybindings.TOGGLE_ENABLED.getTranslatedKeyMessage()))
                                         .build())
                                 .binding(true, () -> ModConfig.INSTANCE.getModEnabled(), value -> ModConfig.INSTANCE.setModEnabled(value))))
                         .group(OptionGroup.createBuilder()
@@ -115,9 +115,9 @@ public class YACLImplementation {
                                 .name(getText("thrust"))
                                 .collapsed(true)
                                 .option(thrustingAllowed.add(getBooleanOption("thrust", "enable_thrust", false, false)
-                                        .description(OptionDescription.of(Text.translatable(
+                                        .description(OptionDescription.of(Component.translatable(
                                                 "config.do_a_barrel_roll.thrust.enable_thrust.description",
-                                                ModKeybindings.THRUST_FORWARD.getBoundKeyLocalizedText())))
+                                                ModKeybindings.THRUST_FORWARD.getTranslatedKeyMessage())))
                                         .binding(false, () -> ModConfig.INSTANCE.getEnableThrustClient(), value -> ModConfig.INSTANCE.setEnableThrust(value))))
                                 .option(thrustingAllowed.add(getOption(Double.class, "thrust", "max_thrust", true, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
@@ -218,13 +218,13 @@ public class YACLImplementation {
                                         .name(getText("documentation", "get_help"))
                                         .text(getText("documentation", "get_help.text"))
                                         .action((screen, btn) -> {
-                                            var client = MinecraftClient.getInstance();
+                                            var client = Minecraft.getInstance();
                                             client.setScreen(new ConfirmScreen((result) -> {
                                                 if (result) {
-                                                    Util.getOperatingSystem().open(URI.create("https://discord.gg/WcYsDDQtyR"));
+                                                    Util.getPlatform().openUri(URI.create("https://discord.gg/WcYsDDQtyR"));
                                                 }
                                                 client.setScreen(screen);
-                                            }, getText("documentation", "get_help"), getText("documentation", "get_help.confirm"), ScreenTexts.YES, ScreenTexts.NO));
+                                            }, getText("documentation", "get_help"), getText("documentation", "get_help.confirm"), CommonComponents.GUI_YES, CommonComponents.GUI_NO));
                                         })
                                         .build())
                                 .build())
@@ -297,7 +297,7 @@ public class YACLImplementation {
                     ModConfig.INSTANCE.save();
 
                     if (mut != null) {
-                        if (MinecraftClient.getInstance().world == null) {
+                        if (Minecraft.getInstance().level == null) {
                             ServerNetworking.CONFIG_HOLDER.instance = mut.toImmutable();
                         } else {
                             var original = ClientNetworking.HANDSHAKE_CLIENT.getConfig();
@@ -344,8 +344,8 @@ public class YACLImplementation {
         return getOption(ExpressionParser.class, category, key, false, false)
                 .description(parser -> {
                     var descBuilder = OptionDescription.createBuilder();
-                    var error = Text.literal(parser.hasError() ? parser.getError().getMessage() : "")
-                            .formatted(Formatting.RED);
+                    var error = Component.literal(parser.hasError() ? parser.getError().getMessage() : "")
+                            .withStyle(ChatFormatting.RED);
                     if (description) {
                         descBuilder.text(getText(category, key + ".description").append("\n\n").append(error));
                     } else {
@@ -365,12 +365,12 @@ public class YACLImplementation {
                 .step(step);
     }
 
-    private static MutableText getText(String category, String key) {
-        return Text.translatable("config.do_a_barrel_roll." + category + "." + key);
+    private static MutableComponent getText(String category, String key) {
+        return Component.translatable("config.do_a_barrel_roll." + category + "." + key);
     }
 
-    private static MutableText getText(String key) {
-        return Text.translatable("config.do_a_barrel_roll." + key);
+    private static MutableComponent getText(String key) {
+        return Component.translatable("config.do_a_barrel_roll." + key);
     }
 
     private static class Dependable {

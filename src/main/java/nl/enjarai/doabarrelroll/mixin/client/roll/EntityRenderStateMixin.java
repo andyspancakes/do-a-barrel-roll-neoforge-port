@@ -1,6 +1,6 @@
 package nl.enjarai.doabarrelroll.mixin.client.roll;
 
-import net.minecraft.client.render.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import nl.enjarai.doabarrelroll.api.RollRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

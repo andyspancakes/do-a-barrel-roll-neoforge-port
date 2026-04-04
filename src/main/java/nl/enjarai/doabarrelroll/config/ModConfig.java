@@ -3,9 +3,6 @@ package nl.enjarai.doabarrelroll.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.command.DefaultPermissions;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
@@ -17,6 +14,9 @@ import nl.enjarai.doabarrelroll.util.ToastUtil;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.server.permissions.Permissions;
 
 public class ModConfig {
     public static final Gson GSON = new GsonBuilder()
@@ -174,10 +174,10 @@ public class ModConfig {
 
     public boolean getEnableThrust() {
         if (general.thrust.enable_thrust) {
-            ClientPlayerEntity player;
+            LocalPlayer player;
             if (DoABarrelRollClient.isConnectedToRealms() &&
-                    (player = MinecraftClient.getInstance().player) != null &&
-                    player.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS)) {
+                    (player = Minecraft.getInstance().player) != null &&
+                    player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
                 return true;
             }
 

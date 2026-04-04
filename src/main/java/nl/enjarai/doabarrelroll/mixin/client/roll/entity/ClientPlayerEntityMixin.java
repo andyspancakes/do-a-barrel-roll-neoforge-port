@@ -1,6 +1,6 @@
 package nl.enjarai.doabarrelroll.mixin.client.roll.entity;
 
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.player.LocalPlayer;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
@@ -17,10 +17,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientPlayerEntity.class)
+@Mixin(LocalPlayer.class)
 public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
-	@Shadow public float renderYaw;
-	@Shadow public float lastRenderYaw;
+	@Shadow public float yBob;
+	@Shadow public float yBobO;
 
 	@Unique
 	private boolean lastSentIsRolling;
@@ -28,7 +28,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
 	private float lastSentRoll;
 
 	@Inject(
-			method = "sendMovementPackets",
+			method = "sendPosition",
 			at = @At("TAIL")
 	)
 	private void doABarrelRoll$sendRollPacket(CallbackInfo ci) {
@@ -119,12 +119,12 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
 		this.prevRoll += (float) deltaRoll;
 
 		// fix hand spasm when wrapping yaw value
-		if (getYaw() < -90 && renderYaw > 90) {
-			renderYaw -= 360;
-			lastRenderYaw -= 360;
-		} else if (getYaw() > 90 && renderYaw < -90) {
-			renderYaw += 360;
-			lastRenderYaw += 360;
+		if (getYaw() < -90 && yBob > 90) {
+			yBob -= 360;
+			yBobO -= 360;
+		} else if (getYaw() > 90 && yBob < -90) {
+			yBob += 360;
+			yBobO += 360;
 		}
 	}
 }

@@ -6,9 +6,9 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.api.event.ServerEvents;
@@ -35,24 +35,24 @@ public class ServerNetworking {
         PayloadTypeRegistry.playS2C().register(RollSyncS2CPacket.PACKET_ID, RollSyncS2CPacket.PACKET_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(ConfigResponseC2SPacket.PACKET_ID, (payload, context) -> {
-            var reply = HANDSHAKE_SERVER.clientReplied(context.player().networkHandler, payload);
+            var reply = HANDSHAKE_SERVER.clientReplied(context.player().connection, payload);
             if (reply == HandshakeServer.HandshakeState.RESEND) {
                 // Resending can happen when the client has a different protocol version than expected.
                 sendHandshake(context.player());
             } else if (reply == HandshakeServer.HandshakeState.ACCEPTED) {
                 // Init roll syncing
-                ServerPlayNetworking.registerReceiver(context.player().networkHandler, RollSyncC2SPacket.PACKET_ID, (payload1, context1) -> {
+                ServerPlayNetworking.registerReceiver(context.player().connection, RollSyncC2SPacket.PACKET_ID, (payload1, context1) -> {
                     var rollPlayer = (RollEntity) context1.player();
 
                     var isRolling = payload1.rolling();
                     var roll = payload1.roll();
 
                     rollPlayer.doABarrelRoll$setRolling(isRolling);
-                    rollPlayer.doABarrelRoll$setRoll(isRolling ? MathHelper.wrapDegrees(roll) : 0);
+                    rollPlayer.doABarrelRoll$setRoll(isRolling ? Mth.wrapDegrees(roll) : 0);
                 });
 
                 // Init client -> server config update
-                ServerPlayNetworking.registerReceiver(context.player().networkHandler, ConfigUpdateC2SPacket.PACKET_ID, (payload1, context1) -> {
+                ServerPlayNetworking.registerReceiver(context.player().connection, ConfigUpdateC2SPacket.PACKET_ID, (payload1, context1) -> {
                     context1.responseSender().sendPacket(CONFIG_HOLDER.clientSendsUpdate(context1.player(), payload1));
                 });
             }
@@ -60,7 +60,7 @@ public class ServerNetworking {
         // The initial handshake is sent in the CommandManagerMixin.
 
         ServerEvents.SERVER_CONFIG_UPDATE.register((server, config) -> {
-            for (var player : server.getPlayerManager().getPlayerList()) {
+            for (var player : server.getPlayerList().getPlayers()) {
                 sendHandshake(player);
             }
         });
@@ -71,9 +71,9 @@ public class ServerNetworking {
         ServerTickEvents.END_SERVER_TICK.register(HANDSHAKE_SERVER::tick);
     }
 
-    public static void sendHandshake(ServerPlayerEntity player) {
-        ServerPlayNetworking.send(player, HANDSHAKE_SERVER.initiateConfigSync(player.networkHandler));
-        HANDSHAKE_SERVER.configSentToClient(player.networkHandler);
+    public static void sendHandshake(ServerPlayer player) {
+        ServerPlayNetworking.send(player, HANDSHAKE_SERVER.initiateConfigSync(player.connection));
+        HANDSHAKE_SERVER.configSentToClient(player.connection);
     }
 
     public static void sendRollUpdates(Entity entity) {

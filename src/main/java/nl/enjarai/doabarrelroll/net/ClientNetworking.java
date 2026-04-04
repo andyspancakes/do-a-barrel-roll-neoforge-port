@@ -2,8 +2,8 @@ package nl.enjarai.doabarrelroll.net;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.api.event.ClientEvents;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
@@ -26,19 +26,19 @@ public class ClientNetworking {
             if (HANDSHAKE_CLIENT.hasConnected()) {
                 // Initialize roll sync
                 ClientPlayNetworking.registerReceiver(RollSyncS2CPacket.PACKET_ID, (payload1, context1) -> {
-                    var client = MinecraftClient.getInstance();
-                    if (client.world == null) {
+                    var client = Minecraft.getInstance();
+                    if (client.level == null) {
                         return;
                     }
 
-                    var entity = client.world.getEntityById(payload1.entityId());
+                    var entity = client.level.getEntity(payload1.entityId());
                     if (entity == null) {
                         return;
                     }
                     var rollEntity = (RollEntity) entity;
 
                     rollEntity.doABarrelRoll$setRolling(payload1.rolling());
-                    rollEntity.doABarrelRoll$setRoll(MathHelper.wrapDegrees(payload1.roll()));
+                    rollEntity.doABarrelRoll$setRoll(Mth.wrapDegrees(payload1.roll()));
                 });
 
                 // Initialize config update ack listener

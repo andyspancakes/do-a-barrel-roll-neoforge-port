@@ -1,7 +1,7 @@
 package nl.enjarai.doabarrelroll.config;
 
 import dev.isxander.yacl3.api.NameableEnum;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 public enum ActivationBehaviour implements NameableEnum {
     VANILLA,
@@ -10,7 +10,7 @@ public enum ActivationBehaviour implements NameableEnum {
     HYBRID_TOGGLE;
 
     @Override
-    public Text getDisplayName() {
-        return Text.translatable("config.do_a_barrel_roll.controls.activation_behaviour." + this.name().toLowerCase());
+    public Component getDisplayName() {
+        return Component.translatable("config.do_a_barrel_roll.controls.activation_behaviour." + this.name().toLowerCase());
     }
 }

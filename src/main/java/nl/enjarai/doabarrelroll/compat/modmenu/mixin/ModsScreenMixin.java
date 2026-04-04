@@ -1,11 +1,8 @@
 //? if fabric {
 package nl.enjarai.doabarrelroll.compat.modmenu.mixin;
 
+import com.mojang.blaze3d.Blaze3D;
 import com.terraformersmc.modmenu.gui.ModsScreen;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.GlfwUtil;
-import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -14,6 +11,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Locale;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 @Mixin(ModsScreen.class)
 public abstract class ModsScreenMixin extends Screen {
@@ -22,7 +22,7 @@ public abstract class ModsScreenMixin extends Screen {
     @Unique
     private double rollSecs;
 
-    protected ModsScreenMixin(Text title) {
+    protected ModsScreenMixin(Component title) {
         super(title);
     }
 
@@ -41,8 +41,8 @@ public abstract class ModsScreenMixin extends Screen {
             method = "render",
             at = @At("HEAD")
     )
-    private void onRender(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        double time = GlfwUtil.getTime();
+    private void onRender(GuiGraphics context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        double time = Blaze3D.getTime();
         double secsDelta = time - lastTime;
         lastTime = time;
 
@@ -50,7 +50,7 @@ public abstract class ModsScreenMixin extends Screen {
             // Draw a nice background to prevent previous frames pixels from peeking through
             context.fill(0, 0, width, height, 0xff000000);
 
-            var matrices = context.getMatrices();
+            var matrices = context.pose();
             rollSecs -= Math.max(0, secsDelta);
             float roll = (float) (rollSecs * Math.PI * 2);
 
