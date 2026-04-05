@@ -76,7 +76,9 @@ dependencies {
         api("nl.enjarai:cicada-lib:${property("deps.cicada")}") {
             exclude(group = "net.fabricmc.fabric-api")
         }
-        include(implementation("me.lucko:fabric-permissions-api:${property("deps.perm_api")}")!!)
+        if (mcVersion != "26.1") {
+            include(implementation("me.lucko:fabric-permissions-api:${property("deps.perm_api")}")!!)
+        }
 
         //runtimeOnly("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-$loader")
         runtimeOnly(modrinth("yacl", "D39gcNZP"))

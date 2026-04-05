@@ -6,7 +6,6 @@ import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import net.minecraft.client.Camera;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import nl.enjarai.doabarrelroll.api.RollCamera;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.math.MagicNumbers;
@@ -54,19 +53,19 @@ public abstract class CameraMixin implements RollCamera {
     }
 
     @Inject(
-            method = "setup",
+            method = "alignWithEntity",
             at = @At("HEAD")
     )
-    private void doABarrelRoll$captureTickDeltaAndUpdate(Level area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
+    private void doABarrelRoll$captureTickDeltaAndUpdate(float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
         tickDeltaRef.set(tickDelta);
-        isRolling = ((RollEntity) focusedEntity).doABarrelRoll$isRolling();
+        isRolling = ((RollEntity) entity).doABarrelRoll$isRolling();
     }
 
     @Inject(
-            method = "setup",
+            method = "alignWithEntity",
             at = @At("TAIL")
     )
-    private void doABarrelRoll$updateRollBack(Level area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+    private void doABarrelRoll$updateRollBack(float tickDelta, CallbackInfo ci) {
         if (isRolling) {
             rollBack = roll;
             lastRollBack = roll;
@@ -75,7 +74,7 @@ public abstract class CameraMixin implements RollCamera {
 
     //? if fabric {
     @WrapWithCondition(
-            method = "setup",
+            method = "alignWithEntity",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/Camera;setRotation(FF)V",
@@ -92,7 +91,7 @@ public abstract class CameraMixin implements RollCamera {
     }
 
     @WrapWithCondition(
-            method = "setup",
+            method = "alignWithEntity",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/Camera;setRotation(FF)V",
@@ -105,7 +104,7 @@ public abstract class CameraMixin implements RollCamera {
     }
 
     @WrapWithCondition(
-            method = "setup",
+            method = "alignWithEntity",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/Camera;setRotation(FF)V",

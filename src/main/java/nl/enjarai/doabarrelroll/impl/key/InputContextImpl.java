@@ -82,7 +82,7 @@ public final class InputContextImpl implements InputContext {
     public void updateKeysByCode() {
         bindingsByKey.clear();
         for (KeyMapping keyBinding : keyBindings) {
-            bindingsByKey.put(((KeyBindingAccessor) keyBinding).getBoundKey(), keyBinding);
+            bindingsByKey.put(((KeyBindingAccessor) keyBinding).getKey(), keyBinding);
         }
     }
 }

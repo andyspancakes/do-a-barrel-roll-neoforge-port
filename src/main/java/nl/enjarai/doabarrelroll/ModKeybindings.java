@@ -105,19 +105,19 @@ public class ModKeybindings {
                 ModConfig.INSTANCE.save();
 
                 if (client.player != null) {
-                    client.player.displayClientMessage(
+                    client.gui.setOverlayMessage(
                             Component.translatable(
                                     "key.do_a_barrel_roll." +
                                             (ModConfig.INSTANCE.getModEnabled() ? "toggle_enabled.enable" : "toggle_enabled.disable")
                             ),
-                            true
+                            false
                     );
                 }
             } else {
                 if (client.player != null) {
-                    client.player.displayClientMessage(
+                    client.gui.setOverlayMessage(
                             Component.translatable("key.do_a_barrel_roll.toggle_enabled.disallowed"),
-                            true
+                            false
                     );
                 }
             }
@@ -128,19 +128,19 @@ public class ModKeybindings {
                 ModConfig.INSTANCE.save();
 
                 if (client.player != null) {
-                    client.player.displayClientMessage(
+                    client.gui.setOverlayMessage(
                             Component.translatable(
                                     "key.do_a_barrel_roll." +
                                             (ModConfig.INSTANCE.getEnableThrust() ? "toggle_thrust.enable" : "toggle_thrust.disable")
                             ),
-                            true
+                            false
                     );
                 }
             } else {
                 if (client.player != null) {
-                    client.player.displayClientMessage(
+                    client.gui.setOverlayMessage(
                             Component.translatable("key.do_a_barrel_roll.toggle_thrust.disallowed"),
-                            true
+                            false
                     );
                 }
             }

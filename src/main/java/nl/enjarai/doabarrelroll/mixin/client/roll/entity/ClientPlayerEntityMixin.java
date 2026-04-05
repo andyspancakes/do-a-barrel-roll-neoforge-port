@@ -54,8 +54,8 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
 		var rotDelta = RotationInstant.of(pitch, yaw, roll);
 		var currentRoll = doABarrelRoll$getRoll();
 		var currentRotation = RotationInstant.of(
-				getPitch(),
-				getYaw(),
+				getXRot(),
+				getYRot(),
 				currentRoll
 		);
 		var context = RollContext.of(currentRotation, rotDelta, mouseDelta);
@@ -75,12 +75,12 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
 
 	@Override
 	public void doABarrelRoll$changeElytraLook(float pitch, float yaw, float roll) {
-		var currentPitch = getPitch();
-		var currentYaw = getYaw();
+		var currentPitch = getXRot();
+		var currentYaw = getYRot();
 		var currentRoll = doABarrelRoll$getRoll();
 
 		// Convert pitch, yaw, and roll to a facing and left vector
-		var facing = new Vector3d(getRotationVecClient().toVector3f());
+		var facing = new Vector3d(getForward().toVector3f());
 		var left = new Vector3d(1, 0, 0);
 		left.rotateZ(-currentRoll * MagicNumbers.TORAD);
 		left.rotateX(-currentPitch * MagicNumbers.TORAD);
@@ -112,17 +112,17 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
 		double deltaRoll = newRoll - currentRoll;
 
 		// Apply vanilla pitch and yaw
-		changeLookDirection(deltaX / 0.15, deltaY / 0.15);
+		turn(deltaX / 0.15, deltaY / 0.15);
 
 		// Apply roll
 		this.roll += (float) deltaRoll;
 		this.prevRoll += (float) deltaRoll;
 
 		// fix hand spasm when wrapping yaw value
-		if (getYaw() < -90 && yBob > 90) {
+		if (getYRot() < -90 && yBob > 90) {
 			yBob -= 360;
 			yBobO -= 360;
-		} else if (getYaw() > 90 && yBob < -90) {
+		} else if (getYRot() > 90 && yBob < -90) {
 			yBob += 360;
 			yBobO += 360;
 		}

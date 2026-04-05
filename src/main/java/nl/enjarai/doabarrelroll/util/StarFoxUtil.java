@@ -1,7 +1,7 @@
 package nl.enjarai.doabarrelroll.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
@@ -46,7 +46,7 @@ public class StarFoxUtil {
         }
     }
 
-    public static void renderPeppy(GuiGraphics context, float tickDelta, int scaledWidth, int scaledHeight) {
+    public static void renderPeppy(GuiGraphicsExtractor context, float tickDelta, int scaledWidth, int scaledHeight) {
         if (barrelRollTimer > 0) {
             int x = scaledWidth / 2 - 75;
             int y = scaledHeight - 90;

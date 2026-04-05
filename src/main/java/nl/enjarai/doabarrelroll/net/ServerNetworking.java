@@ -26,13 +26,13 @@ public class ServerNetworking {
     public static void init() {
         CONFIG_HOLDER.setHandshakeServer(HANDSHAKE_SERVER);
 
-        PayloadTypeRegistry.playC2S().register(ConfigResponseC2SPacket.PACKET_ID, ConfigResponseC2SPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(ConfigUpdateC2SPacket.PACKET_ID, ConfigUpdateC2SPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(RollSyncC2SPacket.PACKET_ID, RollSyncC2SPacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ConfigResponseC2SPacket.PACKET_ID, ConfigResponseC2SPacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ConfigUpdateC2SPacket.PACKET_ID, ConfigUpdateC2SPacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(RollSyncC2SPacket.PACKET_ID, RollSyncC2SPacket.PACKET_CODEC);
 
-        PayloadTypeRegistry.playS2C().register(ConfigSyncS2CPacket.PACKET_ID, ConfigSyncS2CPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(ConfigUpdateAckS2CPacket.PACKET_ID, ConfigUpdateAckS2CPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(RollSyncS2CPacket.PACKET_ID, RollSyncS2CPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ConfigSyncS2CPacket.PACKET_ID, ConfigSyncS2CPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ConfigUpdateAckS2CPacket.PACKET_ID, ConfigUpdateAckS2CPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(RollSyncS2CPacket.PACKET_ID, RollSyncS2CPacket.PACKET_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(ConfigResponseC2SPacket.PACKET_ID, (payload, context) -> {
             var reply = HANDSHAKE_SERVER.clientReplied(context.player().connection, payload);

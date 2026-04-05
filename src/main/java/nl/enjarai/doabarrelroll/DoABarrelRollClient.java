@@ -1,7 +1,7 @@
 package nl.enjarai.doabarrelroll;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.SmoothDouble;
 import nl.enjarai.doabarrelroll.api.event.ClientEvents;
@@ -58,7 +58,7 @@ public class DoABarrelRollClient {
         ClientTickEvents.END_CLIENT_TICK.register(EventCallbacksClient::clientTick);
 
         // Register keybindings on fabric
-        ModKeybindings.ALL.forEach(KeyBindingHelper::registerKeyBinding);    }
+        ModKeybindings.ALL.forEach(KeyMappingHelper::registerKeyMapping);    }
 
     public static void clearValues() {
         PITCH_SMOOTHER.reset();

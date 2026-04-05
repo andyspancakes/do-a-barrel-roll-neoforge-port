@@ -3,8 +3,10 @@ package nl.enjarai.doabarrelroll.compat.controlify;
 
 import dev.isxander.controlify.api.ControlifyApi;
 import dev.isxander.controlify.api.bind.ControlifyBindApi;
+import dev.isxander.controlify.api.entrypoint.PreInitContext;
 import dev.isxander.controlify.api.bind.InputBindingSupplier;
 import dev.isxander.controlify.api.entrypoint.ControlifyEntrypoint;
+import dev.isxander.controlify.api.entrypoint.InitContext;
 import dev.isxander.controlify.api.event.ControlifyEvents;
 import dev.isxander.controlify.bindings.BindContext;
 import net.minecraft.network.chat.Component;
@@ -68,8 +70,8 @@ public class ControlifyCompat implements ControlifyEntrypoint {
     }
 
     @Override
-    public void onControlifyPreInit(ControlifyApi controlifyApi) {
-        var bindings = ControlifyBindApi.get();
+    public void onControlifyPreInit(PreInitContext context) {
+        var bindings = context.bindings();
         bindings.registerBindContext(FALL_FLYING);
 
         PITCH_UP = bindings.registerBinding(builder -> builder
@@ -129,7 +131,7 @@ public class ControlifyCompat implements ControlifyEntrypoint {
                 .addKeyCorrelation(ModKeybindings.THRUST_BACKWARD)
         );
 
-        RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
+        RollEvents.LATE_CAMERA_MODIFIERS.register(ctx -> ctx
                 .useModifier(this::applyToRotation),
                 5, DoABarrelRollClient::isFallFlying);
 
@@ -140,6 +142,10 @@ public class ControlifyCompat implements ControlifyEntrypoint {
                 event.lookInput().zero();
             }
         });
+    }
+
+    @Override
+    public void onControlifyInit(InitContext context) {
     }
 
     @Override

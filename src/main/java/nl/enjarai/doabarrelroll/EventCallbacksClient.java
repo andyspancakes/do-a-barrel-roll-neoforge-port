@@ -2,7 +2,7 @@ package nl.enjarai.doabarrelroll;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.api.RollMouse;
 import nl.enjarai.doabarrelroll.config.ModConfig;
@@ -26,7 +26,7 @@ public class EventCallbacksClient {
         StarFoxUtil.clientTick(client);
     }
 
-    public static Vector2i onRenderCrosshair(GuiGraphics context, DeltaTracker tickCounter, int scaledWidth, int scaledHeight) {
+    public static Vector2i onRenderCrosshair(GuiGraphicsExtractor context, DeltaTracker tickCounter, int scaledWidth, int scaledHeight) {
         if (!DoABarrelRollClient.isFallFlying()) return new Vector2i(0, 0);
         var tickDelta = tickCounter.getRealtimeDeltaTicks();
 

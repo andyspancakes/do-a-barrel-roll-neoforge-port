@@ -3,7 +3,6 @@ package nl.enjarai.doabarrelroll;
 import io.netty.buffer.Unpooled;
 //? if fabric {
 import nl.enjarai.cicada.api.util.ProperLogger;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -40,7 +39,7 @@ public class DoABarrelRoll {
 
     public static boolean checkPermission(ServerGamePacketListenerImpl handler, String permission, int operatorLevel) {
         //? if fabric {
-        return Permissions.check(handler.getPlayer().createCommandSourceStack(), permission, operatorLevel);
+        return handler.getPlayer().level().getServer().getPlayerList().isOp(handler.getPlayer().nameAndId());
         //?} else
         /*return ModPermissions.resolve(handler.getPlayer(), permission, operatorLevel);*/
     }

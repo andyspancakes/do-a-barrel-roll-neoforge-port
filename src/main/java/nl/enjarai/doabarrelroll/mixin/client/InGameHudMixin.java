@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nl.enjarai.doabarrelroll.EventCallbacksClient;
 import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 import org.joml.Vector2i;
@@ -18,20 +18,20 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 @Mixin(Gui.class)
 public abstract class InGameHudMixin {
     @Inject(
-            method = "renderCrosshair",
+            method = "extractCrosshair",
             at = @At(
                     value = "HEAD"
             )
     )
-    private void doABarrelRoll$renderAdditionalCrosshairComponents(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci, @Share("crosshair_offset") LocalRef<Vector2i> crosshairOffset) {
+    private void doABarrelRoll$renderAdditionalCrosshairComponents(GuiGraphicsExtractor context, DeltaTracker tickCounter, CallbackInfo ci, @Share("crosshair_offset") LocalRef<Vector2i> crosshairOffset) {
         crosshairOffset.set(EventCallbacksClient.onRenderCrosshair(context, tickCounter, context.guiWidth(), context.guiHeight()));
     }
 
     @ModifyArgs(
-            method = "renderCrosshair",
+            method = "extractCrosshair",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/util/Identifier;IIII)V"
+                    target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"
             )
     )
     private void doABarrelRoll$moveCrosshair(Args args, @Share("crosshair_offset") LocalRef<Vector2i> crosshairOffset) {
@@ -43,29 +43,27 @@ public abstract class InGameHudMixin {
     }
 
     @ModifyArgs(
-            method = "renderCrosshair",
+            method = "extractCrosshair",
+            require = 0,
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/util/Identifier;IIIIIIII)V"
+                    target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V",
+                    ordinal = 1
             )
     )
     private void doABarrelRoll$moveCrosshair2(Args args, @Share("crosshair_offset") LocalRef<Vector2i> crosshairOffset) {
         var offset = crosshairOffset.get();
         if (offset != null) {
-            args.set(6, (int) args.get(6) + offset.x);
-            args.set(7, (int) args.get(7) + offset.y);
+            args.set(2, (int) args.get(2) + offset.x);
+            args.set(3, (int) args.get(3) + offset.y);
         }
     }
 
     @Inject(
-            method = "render",
-            at = @At(
-                    value = "INVOKE",
-                    //? if fabric {
-                    target = "Lnet/minecraft/client/gui/Gui;renderBossOverlay(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"
-            )
+            method = "extractCameraOverlays",
+            at = @At("TAIL")
     )
-    private void doABarrelRoll$renderPeppy(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    private void doABarrelRoll$renderPeppy(GuiGraphicsExtractor context, DeltaTracker tickCounter, CallbackInfo ci) {
         StarFoxUtil.renderPeppy(context, tickCounter.getRealtimeDeltaTicks(), context.guiWidth(), context.guiHeight());
     }
 }
