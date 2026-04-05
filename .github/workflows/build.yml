@@ -1,0 +1,55 @@
+name: Build NeoForge
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Disable Fabric in Stonecutter
+        run: sed -i 's/mc("1.21.4", "fabric", "neoforge")/mc("1.21.4", "neoforge")/' ./settings.gradle.kts
+      
+      - name: Build with Gradle
+        run: ./gradlew :1.21.4-neoforge:build -x test
+      
+      - name: Find compiled JAR
+        id: jar
+        run: |
+          JAR_PATH=$(find build/libs -name "*neoforge*.jar" -type f | head -1)
+          echo "jar_path=$JAR_PATH" >> $GITHUB_OUTPUT
+          echo "jar_name=$(basename $JAR_PATH)" >> $GITHUB_OUTPUT
+      
+      - name: Upload JAR as artifact
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Do-a-Barrel-Roll-NeoForge
+          path: ${{ steps.jar.outputs.jar_path }}
+          retention-days: 30
+      
+      - name: Create Release on tag
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ steps.jar.outputs.jar_path }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
