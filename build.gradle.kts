@@ -172,7 +172,11 @@ tasks.processResources {
         "fml" to if (loader == "neoforge") "1" else "45",
     )
 
-    filesMatching("fabric.mod.json") { expand(map) }
+    if (isFabric) {
+        filesMatching("fabric.mod.json") { expand(map) }
+    } else {
+        exclude("fabric.mod.json")
+    }
     filesMatching("META-INF/mods.toml") { expand(map) }
     filesMatching("META-INF/neoforge.mods.toml") { expand(map) }
 }
