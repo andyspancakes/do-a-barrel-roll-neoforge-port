@@ -1,7 +1,14 @@
 package nl.enjarai.doabarrelroll.net;
 
+//? if fabric {
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+//?} else {
+/*import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+*///?}
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.api.RollEntity;
@@ -19,48 +26,91 @@ public class ClientNetworking {
     );
 
     public static void init() {
+        //? if fabric {
         ClientPlayNetworking.registerGlobalReceiver(ConfigSyncS2CPacket.PACKET_ID, (payload, context) -> {
             var response = HANDSHAKE_CLIENT.handleConfigSync(payload);
             context.responseSender().sendPacket(response);
 
             if (HANDSHAKE_CLIENT.hasConnected()) {
-                // Initialize roll sync
                 ClientPlayNetworking.registerReceiver(RollSyncS2CPacket.PACKET_ID, (payload1, context1) -> {
                     var client = MinecraftClient.getInstance();
-                    if (client.world == null) {
-                        return;
-                    }
-
+                    if (client.world == null) return;
                     var entity = client.world.getEntityById(payload1.entityId());
-                    if (entity == null) {
-                        return;
-                    }
+                    if (entity == null) return;
                     var rollEntity = (RollEntity) entity;
-
                     rollEntity.doABarrelRoll$setRolling(payload1.rolling());
                     rollEntity.doABarrelRoll$setRoll(MathHelper.wrapDegrees(payload1.roll()));
                 });
 
-                // Initialize config update ack listener
                 ClientPlayNetworking.registerReceiver(ConfigUpdateAckS2CPacket.PACKET_ID, (payload1, context1) -> {
-                     CONFIG_UPDATE_CLIENT.updateAcknowledged(payload1);
+                    CONFIG_UPDATE_CLIENT.updateAcknowledged(payload1);
                 });
             }
         });
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> HANDSHAKE_CLIENT.reset());
+        //?} else {
+        /*NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent.LoggingOut event) -> HANDSHAKE_CLIENT.reset());
+        *///?}
     }
+
+    //? if !fabric {
+    /*public static void registerClientPayloads(PayloadRegistrar registrar) {
+        registrar.playToClient(
+                ConfigSyncS2CPacket.PACKET_ID, ConfigSyncS2CPacket.PACKET_CODEC,
+                (payload, context) -> {
+                    var response = HANDSHAKE_CLIENT.handleConfigSync(payload);
+                    PacketDistributor.sendToServer(response);
+                }
+        );
+        registrar.playToClient(
+                RollSyncS2CPacket.PACKET_ID, RollSyncS2CPacket.PACKET_CODEC,
+                (payload, context) -> {
+                    var client = MinecraftClient.getInstance();
+                    if (client.world == null) return;
+                    var entity = client.world.getEntityById(payload.entityId());
+                    if (entity == null) return;
+                    var rollEntity = (RollEntity) entity;
+                    rollEntity.doABarrelRoll$setRolling(payload.rolling());
+                    rollEntity.doABarrelRoll$setRoll(MathHelper.wrapDegrees(payload.roll()));
+                }
+        );
+        registrar.playToClient(
+                ConfigUpdateAckS2CPacket.PACKET_ID, ConfigUpdateAckS2CPacket.PACKET_CODEC,
+                (payload, context) -> CONFIG_UPDATE_CLIENT.updateAcknowledged(payload)
+        );
+        registrar.playToServer(
+                ConfigResponseC2SPacket.PACKET_ID, ConfigResponseC2SPacket.PACKET_CODEC,
+                (payload, context) -> {}
+        );
+        registrar.playToServer(
+                RollSyncC2SPacket.PACKET_ID, RollSyncC2SPacket.PACKET_CODEC,
+                (payload, context) -> {}
+        );
+        registrar.playToServer(
+                ConfigUpdateC2SPacket.PACKET_ID, ConfigUpdateC2SPacket.PACKET_CODEC,
+                (payload, context) -> {}
+        );
+    }
+    *///?}
 
     public static void sendRollUpdate(RollEntity entity) {
         if (HANDSHAKE_CLIENT.hasConnected()) {
             boolean rolling = entity.doABarrelRoll$isRolling();
             float roll = entity.doABarrelRoll$getRoll();
-
+            //? if fabric {
             ClientPlayNetworking.send(new RollSyncC2SPacket(rolling, roll));
+            //?} else {
+            /*PacketDistributor.sendToServer(new RollSyncC2SPacket(rolling, roll));
+            *///?}
         }
     }
 
     public static void sendConfigUpdatePacket(ModConfigServer config) {
+        //? if fabric {
         ClientPlayNetworking.send(CONFIG_UPDATE_CLIENT.prepUpdatePacket(config));
+        //?} else {
+        /*PacketDistributor.sendToServer(CONFIG_UPDATE_CLIENT.prepUpdatePacket(config));
+        *///?}
     }
 }

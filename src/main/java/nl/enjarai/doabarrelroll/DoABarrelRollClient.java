@@ -1,7 +1,13 @@
 package nl.enjarai.doabarrelroll;
 
+//? if fabric {
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+//?} else {
+/*import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.common.NeoForge;
+*///?}
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.Smoother;
 import nl.enjarai.doabarrelroll.api.event.ClientEvents;
@@ -55,10 +61,14 @@ public class DoABarrelRollClient {
 
         ClientNetworking.init();
 
+        //? if fabric {
         ClientTickEvents.END_CLIENT_TICK.register(EventCallbacksClient::clientTick);
-
         // Register keybindings on fabric
-        ModKeybindings.ALL.forEach(KeyBindingHelper::registerKeyBinding);    }
+        ModKeybindings.ALL.forEach(KeyBindingHelper::registerKeyBinding);
+        //?} else {
+        /*NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> EventCallbacksClient.clientTick(event.getClient()));
+        *///?}
+    }
 
     public static void clearValues() {
         PITCH_SMOOTHER.clear();

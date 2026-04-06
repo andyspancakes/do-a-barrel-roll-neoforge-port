@@ -82,7 +82,7 @@ dependencies {
         } else
             "neoForge"("net.neoforged:neoforge:${property("deps.fml")}")
         include(implementation(mixinSquared.format(loader))!!)
-        modImplementation("org.sinytra.forgified-fabric-api:forgified-fabric-api:${property("deps.fapi")}")
+        // No FFAPI dependency — ported natively to NeoForge APIs
     }
     // Config
 
@@ -217,7 +217,7 @@ publishMods {
             requires("fabric-api", "cicada")
             embeds("cardinal-components-api")
         } else {
-            requires("forgified-fabric-api")
+// No FFAPI required — native NeoForge port
         }
         optional("yacl")
     }
@@ -231,7 +231,7 @@ publishMods {
             requires("fabric-api", "cicada")
             embeds("cardinal-components-api")
         } else {
-            requires("forgified-fabric-api")
+// No FFAPI required — native NeoForge port
         }
         optional("yacl")
     }
