@@ -51,13 +51,18 @@ dependencies {
 
     minecraft("com.mojang:minecraft:${mcVersion}")
     @Suppress("UnstableApiUsage")
-    mappings(loom.layered {
-        mappings("net.fabricmc:yarn:${mcVersion}+build.${property("deps.yarn_build")}:v2")
-        if (stonecutter.eval(mcVersion, "1.20.6"))
-            mappings("dev.architectury:yarn-mappings-patch-neoforge:1.20.5+build.3")
-        else if (stonecutter.eval(mcVersion, "1.21"))
-            mappings("dev.architectury:yarn-mappings-patch-neoforge:1.21+build.4")
-    })
+    if (isFabric) {
+        mappings(loom.layered {
+            mappings("net.fabricmc:yarn:${mcVersion}+build.${property("deps.yarn_build")}:v2")
+            if (stonecutter.eval(mcVersion, "1.20.6"))
+                mappings("dev.architectury:yarn-mappings-patch-neoforge:1.20.5+build.3")
+            else if (stonecutter.eval(mcVersion, "1.21"))
+                mappings("dev.architectury:yarn-mappings-patch-neoforge:1.21+build.4")
+        })
+    } else {
+        // NeoForge: use official Mojang mappings — yarn patch doesn't exist for 1.21.4+
+        mappings(loom.officialMojangMappings())
+    }
     val mixinExtras = "io.github.llamalad7:mixinextras-%s:${property("deps.mixin_extras")}"
     val mixinSquared = "com.github.bawnorton.mixinsquared:mixinsquared-%s:${property("deps.mixin_squared")}"
     implementation(annotationProcessor(mixinSquared.format("common"))!!)
