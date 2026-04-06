@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 //?} else {
 /*import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 *///?}
 import net.minecraft.client.MinecraftClient;
@@ -55,7 +54,9 @@ public class ClientNetworking {
     }
 
     //? if !fabric {
-    /*public static void registerClientPayloads(PayloadRegistrar registrar) {
+    /*// Register only S2C payloads here.
+    // C2S payloads are registered in ServerNetworking.registerPayloads() to avoid double registration.
+    public static void registerClientPayloads(PayloadRegistrar registrar) {
         registrar.playToClient(
                 ConfigSyncS2CPacket.PACKET_ID, ConfigSyncS2CPacket.PACKET_CODEC,
                 (payload, context) -> {
@@ -78,18 +79,6 @@ public class ClientNetworking {
         registrar.playToClient(
                 ConfigUpdateAckS2CPacket.PACKET_ID, ConfigUpdateAckS2CPacket.PACKET_CODEC,
                 (payload, context) -> CONFIG_UPDATE_CLIENT.updateAcknowledged(payload)
-        );
-        registrar.playToServer(
-                ConfigResponseC2SPacket.PACKET_ID, ConfigResponseC2SPacket.PACKET_CODEC,
-                (payload, context) -> {}
-        );
-        registrar.playToServer(
-                RollSyncC2SPacket.PACKET_ID, RollSyncC2SPacket.PACKET_CODEC,
-                (payload, context) -> {}
-        );
-        registrar.playToServer(
-                ConfigUpdateC2SPacket.PACKET_ID, ConfigUpdateC2SPacket.PACKET_CODEC,
-                (payload, context) -> {}
         );
     }
     *///?}

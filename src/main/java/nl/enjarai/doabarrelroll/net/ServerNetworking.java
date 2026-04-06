@@ -12,7 +12,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 *///?}
 import net.minecraft.entity.Entity;
@@ -65,8 +64,7 @@ public class ServerNetworking {
             }
         });
         //?} else {
-        /*// NeoForge: payload registration happens via RegisterPayloadHandlersEvent on the mod bus.
-        // Handlers are registered in registerPayloads() below, called from DoABarrelRollInitializer.
+        /*// NeoForge: payload registration handled via RegisterPayloadHandlersEvent in DoABarrelRollInitializer.
         *///?}
         // The initial handshake is sent in the CommandManagerMixin.
 
@@ -92,7 +90,9 @@ public class ServerNetworking {
     }
 
     //? if !fabric {
-    /*public static void registerPayloads(PayloadRegistrar registrar) {
+    /*// Register only server-received (C2S) payloads here.
+    // S2C payloads are registered in ClientNetworking.registerClientPayloads() to avoid double registration.
+    public static void registerPayloads(PayloadRegistrar registrar) {
         registrar.playToServer(
                 ConfigResponseC2SPacket.PACKET_ID, ConfigResponseC2SPacket.PACKET_CODEC,
                 (payload, context) -> {
@@ -101,7 +101,6 @@ public class ServerNetworking {
                     if (reply == HandshakeServer.HandshakeState.RESEND) {
                         sendHandshake(player);
                     }
-                    // ACCEPTED state: roll/config packets are handled globally below
                 }
         );
         registrar.playToServer(
@@ -121,18 +120,6 @@ public class ServerNetworking {
                     var response = CONFIG_HOLDER.clientSendsUpdate(player, payload);
                     PacketDistributor.sendToPlayer(player, response);
                 }
-        );
-        registrar.playToClient(
-                ConfigSyncS2CPacket.PACKET_ID, ConfigSyncS2CPacket.PACKET_CODEC,
-                (payload, context) -> {}
-        );
-        registrar.playToClient(
-                ConfigUpdateAckS2CPacket.PACKET_ID, ConfigUpdateAckS2CPacket.PACKET_CODEC,
-                (payload, context) -> {}
-        );
-        registrar.playToClient(
-                RollSyncS2CPacket.PACKET_ID, RollSyncS2CPacket.PACKET_CODEC,
-                (payload, context) -> {}
         );
     }
     *///?}
