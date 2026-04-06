@@ -66,7 +66,7 @@ public class DoABarrelRollClient {
         // Register keybindings on fabric
         ModKeybindings.ALL.forEach(KeyBindingHelper::registerKeyBinding);
         //?} else {
-        /*NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> EventCallbacksClient.clientTick(event.getClient()));
+        /*NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> EventCallbacksClient.clientTick(net.minecraft.client.MinecraftClient.getInstance()));
         *///?}
     }
 
