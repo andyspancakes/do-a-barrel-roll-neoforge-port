@@ -1,6 +1,6 @@
 ![Do a Barrel Roll icon](https://cdn.modrinth.com/data/cached_images/cdfab9e6656e9189305107e5d5a7bc4f601d34ac_0.webp)
 ## Information
-THIS IS AN UNOFFICAL PORT TO NEOFORGE!!!! ALL CREDITS TO [Enjarai](https://modrinth.com/user/enjarai) ALSO YOU'LL NEED [FORGIFIED FARBIC API](https://modrinth.com/mod/forgified-fabric-api) TO BE ABLE TO RUN THIS!!!! Note: this version is ported!
+THIS IS AN UNOFFICAL PORT TO NEOFORGE!!!! ALL CREDITS TO [Enjarai](https://modrinth.com/user/enjarai) ALSO YOU'LL NEED [FORGIFIED FARBIC API](https://modrinth.com/mod/forgified-fabric-api) TO BE ABLE TO RUN THIS!!!! Note: this version is ported! this version doesnt have forgifited farbic api! you dont need it!
 ## Overview
 Do a Barrel Roll is a lightweight, fully clientside mod that changes elytra flight to be more fun and semi-realistic. It achieves this by redesigning movement with a completely unlocked camera orientation in mind, allowing for full pitch, yaw and roll control in flight.
 
