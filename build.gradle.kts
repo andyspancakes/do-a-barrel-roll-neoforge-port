@@ -1,3 +1,5 @@
+import java.net.URI
+
 plugins {
     `maven-publish`
     id("net.fabricmc.fabric-loom")
@@ -203,8 +205,8 @@ stonecutter {
 publishMods {
     val modrinthToken = findProperty("enjaraiModrinthToken")
     val curseforgeToken = findProperty("enjaraiCurseforgeToken")
-    val githubToken = findProperty("enjaraiGithubToken")
-    dryRun = modrinthToken == null || curseforgeToken == null || githubToken == null
+    val codebergToken = findProperty("enjaraiCodebergToken")
+    dryRun = modrinthToken == null || curseforgeToken == null || codebergToken == null
 
     file = tasks.jar.get().archiveFile
 //    additionalFiles.from(tasks.sourcesJar.get().archiveFile)
@@ -244,10 +246,10 @@ publishMods {
         optional("yacl")
     }
 
-    github {
-        repository = property("publish.github").toString()
-        accessToken = githubToken.toString()
-
+    forgejo {
+        repository = property("publish.codeberg").toString()
+        accessToken = codebergToken.toString()
+        host(URI("https://codeberg.org"))
         commitish = property("publish.branch").toString()
         tagName = "${project.version}-$loader"
     }

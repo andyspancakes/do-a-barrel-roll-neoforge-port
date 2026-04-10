@@ -1,1 +1,1 @@
-- Updated to support 1.21.11.
+- Updated to support 26.1.
