@@ -26,11 +26,11 @@ public abstract class LivingEntityMixin extends Entity {
 
     @SuppressWarnings("ConstantConditions")
     @ModifyArg(
-            method = "travelGliding",
+            method = "travel",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/LivingEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V",
-                    ordinal = 0
+                    ordinal = 6
             )
     )
     private Vec3d doABarrelRoll$wrapElytraVelocity(Vec3d original) {
@@ -55,7 +55,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
 
         double maxSpeed = ModConfig.INSTANCE.getMaxThrust();
-        double speedIncrease = Math.max(maxSpeed - velocity.length() * Math.signum(rotation.dotProduct(velocity) * throttleSign), 0) / maxSpeed * throttleSign;
+        double speedIncrease = Math.max(maxSpeed - velocity.length(), 0) / maxSpeed * throttleSign;
         double acceleration = ModConfig.INSTANCE.getThrustAcceleration() * speedIncrease;
 
         return original.add(
