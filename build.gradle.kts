@@ -65,15 +65,15 @@ dependencies {
     val mixinSquared = "com.github.bawnorton.mixinsquared:mixinsquared-%s:${property("deps.mixin_squared")}"
     implementation(annotationProcessor(mixinSquared.format("common"))!!)
 
-//    compileOnly("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-$loader")
-    compileOnly(modrinth("yacl", "D39gcNZP"))
+    compileOnly("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-$loader")
+//    compileOnly(modrinth("yacl", "D39gcNZP"))
 
     if (isFabric) {
         implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")}")
         implementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
         include(implementation(mixinSquared.format("fabric"))!!)
-//        ifStable("com.terraformersmc:modmenu:${property("deps.modmenu")}")
-        ifStable(modrinth("modmenu", "jvjwXH6l"))
+        ifStable("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+//        ifStable(modrinth("modmenu", "jvjwXH6l"))
 
         api("nl.enjarai:cicada-lib:${property("deps.cicada")}") {
             exclude(group = "net.fabricmc.fabric-api")
@@ -82,8 +82,8 @@ dependencies {
             include(implementation("me.lucko:fabric-permissions-api:${property("deps.perm_api")}")!!)
         }
 
-        //runtimeOnly("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-$loader")
-        runtimeOnly(modrinth("yacl", "D39gcNZP"))
+        runtimeOnly("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-$loader")
+//        runtimeOnly(modrinth("yacl", "D39gcNZP"))
     } else {
         if (loader == "forge") {
             "forge"("net.minecraftforge:forge:${mcVersion}-${property("deps.fml")}")
@@ -192,14 +192,14 @@ yamlang {
 }
 
 // Env configuration
-stonecutter {
-    val j21 = eval(mcVersion, ">=1.20.6")
-    java {
-        withSourcesJar()
-        sourceCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
-        targetCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
-    }
-}
+//stonecutter {
+//    val j21 = eval(mcVersion, ">=1.20.6")
+//    java {
+//        withSourcesJar()
+//        sourceCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
+//        targetCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
+//    }
+//}
 
 // Publishing
 publishMods {

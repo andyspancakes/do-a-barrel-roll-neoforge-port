@@ -1,5 +1,6 @@
 package nl.enjarai.doabarrelroll;
 
+import net.minecraft.client.gui.screens.Overlay;
 import nl.enjarai.doabarrelroll.api.key.InputContext;
 import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfig;
@@ -105,19 +106,17 @@ public class ModKeybindings {
                 ModConfig.INSTANCE.save();
 
                 if (client.player != null) {
-                    client.gui.setOverlayMessage(
+                    client.gui.chatListener().handleOverlay(
                             Component.translatable(
                                     "key.do_a_barrel_roll." +
                                             (ModConfig.INSTANCE.getModEnabled() ? "toggle_enabled.enable" : "toggle_enabled.disable")
-                            ),
-                            false
+                            )
                     );
                 }
             } else {
                 if (client.player != null) {
-                    client.gui.setOverlayMessage(
-                            Component.translatable("key.do_a_barrel_roll.toggle_enabled.disallowed"),
-                            false
+                    client.gui.chatListener().handleOverlay(
+                            Component.translatable("key.do_a_barrel_roll.toggle_enabled.disallowed")
                     );
                 }
             }
@@ -128,25 +127,23 @@ public class ModKeybindings {
                 ModConfig.INSTANCE.save();
 
                 if (client.player != null) {
-                    client.gui.setOverlayMessage(
+                    client.gui.chatListener().handleOverlay(
                             Component.translatable(
                                     "key.do_a_barrel_roll." +
                                             (ModConfig.INSTANCE.getEnableThrust() ? "toggle_thrust.enable" : "toggle_thrust.disable")
-                            ),
-                            false
+                            )
                     );
                 }
             } else {
                 if (client.player != null) {
-                    client.gui.setOverlayMessage(
-                            Component.translatable("key.do_a_barrel_roll.toggle_thrust.disallowed"),
-                            false
+                    client.gui.chatListener().handleOverlay(
+                            Component.translatable("key.do_a_barrel_roll.toggle_thrust.disallowed")
                     );
                 }
             }
         }
         while (OPEN_CONFIG.consumeClick()) {
-            client.setScreen(ModConfigScreen.create(client.screen));
+            client.gui.setScreen(ModConfigScreen.create(client.gui.screen()));
         }
     }
 }

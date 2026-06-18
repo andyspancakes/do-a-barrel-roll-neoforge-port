@@ -18,14 +18,14 @@ public class ModConfigScreen {
                 if (result) {
                     Util.getPlatform().openUri(URI.create("https://modrinth.com/mod/yacl/versions"));
                 }
-                Minecraft.getInstance().setScreen(parent);
+                Minecraft.getInstance().gui.setScreen(parent);
             }, getText("missing"), getText("missing.message"), CommonComponents.GUI_YES, CommonComponents.GUI_NO);
         } else if (!Compat.isYACLUpToDate()) {
             return new ConfirmScreen((result) -> {
                 if (result) {
                     Util.getPlatform().openUri(URI.create("https://modrinth.com/mod/yacl/versions"));
                 }
-                Minecraft.getInstance().setScreen(parent);
+                Minecraft.getInstance().gui.setScreen(parent);
             }, getText("outdated"), getText("outdated.message"), CommonComponents.GUI_YES, CommonComponents.GUI_NO);
         } else {
             return YACLImplementation.generateConfigScreen(parent);

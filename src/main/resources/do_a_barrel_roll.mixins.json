@@ -14,7 +14,7 @@
   ],
   "client": [
     "client.ClientPlayerEntityMixin",
-    "client.InGameHudMixin",
+    "client.HudMixin",
     "client.LivingEntityMixin",
     "client.PlayerEntityMixin",
     "client.roll.CameraMixin",

@@ -219,11 +219,11 @@ public class YACLImplementation {
                                         .text(getText("documentation", "get_help.text"))
                                         .action((screen, btn) -> {
                                             var client = Minecraft.getInstance();
-                                            client.setScreen(new ConfirmScreen((result) -> {
+                                            client.gui.setScreen(new ConfirmScreen((result) -> {
                                                 if (result) {
                                                     Util.getPlatform().openUri(URI.create("https://discord.gg/WcYsDDQtyR"));
                                                 }
-                                                client.setScreen(screen);
+                                                client.gui.setScreen(screen);
                                             }, getText("documentation", "get_help"), getText("documentation", "get_help.confirm"), CommonComponents.GUI_YES, CommonComponents.GUI_NO));
                                         })
                                         .build())

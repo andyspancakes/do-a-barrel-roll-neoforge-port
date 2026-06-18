@@ -3,8 +3,8 @@ package nl.enjarai.doabarrelroll.mixin.client;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
 import nl.enjarai.doabarrelroll.EventCallbacksClient;
 import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 import org.joml.Vector2i;
@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Mixin(Gui.class)
-public abstract class InGameHudMixin {
+@Mixin(Hud.class)
+public abstract class HudMixin {
     @Inject(
             method = "extractCrosshair",
             at = @At(
