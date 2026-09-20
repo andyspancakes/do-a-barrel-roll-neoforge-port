@@ -4,7 +4,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0" apply false
     id("co.uzzu.dotenv.gradle") version "4.0.0"
     id("net.fabricmc.fabric-loom") version "1.15-SNAPSHOT" apply false
-    id("me.modmuss50.mod-publish-plugin") version "1.1.0" apply false
+    id("me.modmuss50.mod-publish-plugin") version "2.2.0" apply false
 }
 stonecutter active "26.3-fabric" /* [SC] DO NOT EDIT */
 

@@ -237,6 +237,9 @@ publishMods {
         accessToken = curseforgeToken.toString()
         targets.forEach(minecraftVersions::add)
 
+        client = true
+        server = true
+
         if (isFabric) {
             requires("fabric-api", "cicada")
             embeds("cardinal-components-api")
