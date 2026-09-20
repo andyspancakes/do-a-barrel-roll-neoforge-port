@@ -1,7 +1,9 @@
 package nl.enjarai.doabarrelroll.mixin.client.roll;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
+import net.minecraft.client.gui.components.debug.DebugEntryPosition;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -9,22 +11,20 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-@Mixin(DebugScreenOverlay.class)
+@Mixin(DebugEntryPosition.class)
 public abstract class DebugHudMixin {
-    @Shadow @Final private Minecraft minecraft;
-
     // Not using ModifyArg**s** here to be compatible with Forge
     @ModifyArg(
-            method = "getLeftText",
+            method = "display",
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/lang/String;format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;",
-                    ordinal = 7
+                    ordinal = 3
             ),
             index = 1,
             require = 0
     )
-    private String doABarrelRoll$modifyDebugHudText(String format) {
+    private String doABarrelRoll$modifyDebugHudText(String format, @Local(name = "minecraft") Minecraft minecraft) {
         var cameraEntity = minecraft.getCameraEntity();
         if (cameraEntity == null) return null;
 
@@ -35,16 +35,16 @@ public abstract class DebugHudMixin {
     }
 
     @ModifyArg(
-            method = "getLeftText",
+            method = "display",
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/lang/String;format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;",
-                    ordinal = 7
+                    ordinal = 3
             ),
             index = 2,
             require = 0
     )
-    private Object[] doABarrelRoll$modifyDebugHudText2(Object[] args) {
+    private Object[] doABarrelRoll$modifyDebugHudText2(Object[] args, @Local(name = "minecraft") Minecraft minecraft) {
         var cameraEntity = minecraft.getCameraEntity();
         if (cameraEntity == null) return args;
 

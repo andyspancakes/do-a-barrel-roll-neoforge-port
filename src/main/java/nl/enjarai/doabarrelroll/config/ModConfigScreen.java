@@ -1,5 +1,6 @@
 package nl.enjarai.doabarrelroll.config;
 
+import com.mojang.blaze3d.Blaze3D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -16,14 +17,14 @@ public class ModConfigScreen {
         if (!Compat.isYACLLoaded()) {
             return new ConfirmScreen((result) -> {
                 if (result) {
-                    Util.getPlatform().openUri(URI.create("https://modrinth.com/mod/yacl/versions"));
+                    Blaze3D.openUri(URI.create("https://modrinth.com/mod/yacl/versions"));
                 }
                 Minecraft.getInstance().gui.setScreen(parent);
             }, getText("missing"), getText("missing.message"), CommonComponents.GUI_YES, CommonComponents.GUI_NO);
         } else if (!Compat.isYACLUpToDate()) {
             return new ConfirmScreen((result) -> {
                 if (result) {
-                    Util.getPlatform().openUri(URI.create("https://modrinth.com/mod/yacl/versions"));
+                    Blaze3D.openUri(URI.create("https://modrinth.com/mod/yacl/versions"));
                 }
                 Minecraft.getInstance().gui.setScreen(parent);
             }, getText("outdated"), getText("outdated.message"), CommonComponents.GUI_YES, CommonComponents.GUI_NO);

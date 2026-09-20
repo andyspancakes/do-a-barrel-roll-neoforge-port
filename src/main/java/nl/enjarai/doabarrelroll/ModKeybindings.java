@@ -1,12 +1,9 @@
 package nl.enjarai.doabarrelroll;
 
-import net.minecraft.client.gui.screens.Overlay;
-import nl.enjarai.doabarrelroll.api.key.InputContext;
 import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.ModConfigScreen;
 import nl.enjarai.doabarrelroll.net.ClientNetworking;
-import org.lwjgl.glfw.GLFW;
 import com.mojang.blaze3d.platform.InputConstants;
 import java.util.List;
 import net.minecraft.client.KeyMapping;
@@ -19,68 +16,68 @@ public class ModKeybindings {
 
     public static final KeyMapping TOGGLE_ENABLED = new KeyMapping(
             "key.do_a_barrel_roll.toggle_enabled",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_I,
+            InputConstants.Type.KEYBOARD,
+            InputConstants.KEY_I,
             CATEGORY
     );
     public static final KeyMapping TOGGLE_THRUST = new KeyMapping(
             "key.do_a_barrel_roll.toggle_thrust",
-            InputConstants.Type.KEYSYM,
+            InputConstants.Type.KEYBOARD,
             InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
     public static final KeyMapping OPEN_CONFIG = new KeyMapping(
             "key.do_a_barrel_roll.open_config",
-            InputConstants.Type.KEYSYM,
+            InputConstants.Type.KEYBOARD,
             InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
 
     public static final KeyMapping PITCH_UP = new KeyMapping(
             "key.do_a_barrel_roll.pitch_up",
-            InputConstants.Type.KEYSYM,
+            InputConstants.Type.KEYBOARD,
             InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
     public static final KeyMapping PITCH_DOWN = new KeyMapping(
             "key.do_a_barrel_roll.pitch_down",
-            InputConstants.Type.KEYSYM,
+            InputConstants.Type.KEYBOARD,
             InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
     public static final KeyMapping YAW_LEFT = new KeyMapping(
             "key.do_a_barrel_roll.yaw_left",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_A,
+            InputConstants.Type.KEYBOARD,
+            InputConstants.KEY_A,
             CATEGORY
     );
     public static final KeyMapping YAW_RIGHT = new KeyMapping(
             "key.do_a_barrel_roll.yaw_right",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_D,
+            InputConstants.Type.KEYBOARD,
+            InputConstants.KEY_D,
             CATEGORY
     );
     public static final KeyMapping ROLL_LEFT = new KeyMapping(
             "key.do_a_barrel_roll.roll_left",
-            InputConstants.Type.KEYSYM,
+            InputConstants.Type.KEYBOARD,
             InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
     public static final KeyMapping ROLL_RIGHT = new KeyMapping(
             "key.do_a_barrel_roll.roll_right",
-            InputConstants.Type.KEYSYM,
+            InputConstants.Type.KEYBOARD,
             InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
     public static final KeyMapping THRUST_FORWARD = new KeyMapping(
             "key.do_a_barrel_roll.thrust_forward",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_W,
+            InputConstants.Type.KEYBOARD,
+            InputConstants.KEY_W,
             CATEGORY
     );
     public static final KeyMapping THRUST_BACKWARD = new KeyMapping(
             "key.do_a_barrel_roll.thrust_backward",
-            InputConstants.Type.KEYSYM,
+            InputConstants.Type.KEYBOARD,
             InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );

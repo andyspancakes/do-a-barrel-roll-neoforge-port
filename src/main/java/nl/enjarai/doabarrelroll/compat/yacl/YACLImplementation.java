@@ -1,5 +1,6 @@
 package nl.enjarai.doabarrelroll.compat.yacl;
 
+import com.mojang.blaze3d.Blaze3D;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
@@ -221,7 +222,7 @@ public class YACLImplementation {
                                             var client = Minecraft.getInstance();
                                             client.gui.setScreen(new ConfirmScreen((result) -> {
                                                 if (result) {
-                                                    Util.getPlatform().openUri(URI.create("https://discord.gg/WcYsDDQtyR"));
+                                                    Blaze3D.openUri(URI.create("https://discord.gg/WcYsDDQtyR"));
                                                 }
                                                 client.gui.setScreen(screen);
                                             }, getText("documentation", "get_help"), getText("documentation", "get_help.confirm"), CommonComponents.GUI_YES, CommonComponents.GUI_NO));
