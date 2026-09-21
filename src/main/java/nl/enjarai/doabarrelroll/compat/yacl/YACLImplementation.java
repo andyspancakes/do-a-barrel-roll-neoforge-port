@@ -76,6 +76,7 @@ public class YACLImplementation {
                                                         .append(getText("controls", "activation_behaviour.description." + behaviour.name().toLowerCase())))
                                                 .build())
                                         .controller(option1 -> EnumControllerBuilder.create(option1)
+                                                .formatValue(v -> Component.translatable("config.do_a_barrel_roll.controls.activation_behaviour." + v.name().toLowerCase()))
                                                 .enumClass(ActivationBehaviour.class))
                                         .binding(ActivationBehaviour.VANILLA, () -> ModConfig.INSTANCE.getActivationBehaviour(), value -> ModConfig.INSTANCE.setActivationBehaviour(value))
                                         .build())
