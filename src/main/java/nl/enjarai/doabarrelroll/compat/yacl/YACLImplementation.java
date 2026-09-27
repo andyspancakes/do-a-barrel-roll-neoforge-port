@@ -5,7 +5,12 @@ import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
+//? if fabric {
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+//?} else {
+/*import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.common.NeoForge;
+*///?}
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -314,7 +319,15 @@ public class YACLImplementation {
                     // Add a listener for this screen to update elements when the server config changes.
                     ClientEvents.ServerConfigUpdateEvent listener = configListener::accept;
                     ClientEvents.SERVER_CONFIG_UPDATE.register(listener);
+                    //? if fabric {
                     ScreenEvents.remove(screen).register(screen1 -> ClientEvents.SERVER_CONFIG_UPDATE.unregister(listener));
+                    //?} else {
+                    /*NeoForge.EVENT_BUS.addListener((ScreenEvent.Closing event) -> {
+                        if (event.getScreen() == screen) {
+                            ClientEvents.SERVER_CONFIG_UPDATE.unregister(listener);
+                        }
+                    });
+                    *///?}
                 })
                 .build()
                 .generateScreen(parent);
